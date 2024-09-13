@@ -11,13 +11,9 @@ namespace minimalsAPIs.Infraestrutura.Db
         {
             _configuracaoAppSettings = configuration;
         }
-
-        public DbContexto(DbContextOptions options) : base(options)
-        {
-
-        }
  
         public DbSet<Administrador> Administradores { get; set; } = default!;
+        public DbSet<Veiculo> Veiculos { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

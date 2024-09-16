@@ -38,7 +38,8 @@ app.MapPost("adm/login", ([FromBody] LoginDTO usuario, IAdministradorServico adm
 }).WithTags("Administradores");
 #endregion
 
-#region Veiculos Adicionar
+#region Veiculos CRUD
+// POST - Adicionar
 app.MapPost("/veiculos", ([FromBody] VeiculoDTO veiculo, IVeiculoServico veiculoSrv) => {
     var veiculoCriado = new Veiculo {
         Nome = veiculo.Nome,
@@ -49,17 +50,15 @@ app.MapPost("/veiculos", ([FromBody] VeiculoDTO veiculo, IVeiculoServico veiculo
     veiculoSrv.Incluir(veiculoCriado);
     return Results.Created($"/veiculo/{veiculoCriado.Id}", veiculoCriado);
 }).WithTags("Veiculos");
-#endregion
 
-#region Veiculos GET Todos
+// GET - Todos
 app.MapGet("/veiculos", ([FromQuery] int? pagina, IVeiculoServico veiculo) => {
     var veiculos = veiculo.Todos(pagina);
 
     return Results.Ok(veiculos);
 }).WithTags("Veiculos");
-#endregion
 
-#region Veiculos GET Id
+// GET - Por Id
 app.MapGet("/veiculos/{id}", ([FromRoute] int id, IVeiculoServico veiculo) => {
     var veiculoBuscado = veiculo.BuscaPorId(id);
 
@@ -68,9 +67,8 @@ app.MapGet("/veiculos/{id}", ([FromRoute] int id, IVeiculoServico veiculo) => {
 
     return Results.Ok(veiculoBuscado);
 }).WithTags("Veiculos");
-#endregion
 
-#region Veiculos PUT atualizar
+// PUT - Atualizar
 app.MapPut("/veiculos/{id}", ([FromRoute] int id, VeiculoDTO dadosVeiculo, IVeiculoServico servico) => {
     var veiculoBuscado = servico.BuscaPorId(id);
     
@@ -83,6 +81,16 @@ app.MapPut("/veiculos/{id}", ([FromRoute] int id, VeiculoDTO dadosVeiculo, IVeic
 
     servico.Atualizar(veiculoBuscado);
     return Results.Ok(veiculoBuscado);
+}).WithTags("Veiculos");
+
+// DELETE - Apagar
+app.MapDelete("/veiculos/{id}", ([FromRoute] int id, IVeiculoServico servico) => {
+    var veiculoBuscado = servico.BuscaPorId(id);
+    if (veiculoBuscado == null)
+        return Results.NotFound();
+
+    servico.Apagar(veiculoBuscado);
+    return Results.Ok("Deletado com sucesso!");
 }).WithTags("Veiculos");
 #endregion
 

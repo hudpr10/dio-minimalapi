@@ -10,12 +10,12 @@ namespace Testes.Domain.Entidades
         {
             // Arrange - Testa a instância
             var adm = new Administrador();
-
-            // Act - Testa o SET
             adm.Id = 1;
             adm.Email = "teste@teste.com";
             adm.Senha = "teste";
             adm.Perfil = "Adm";
+
+            // Act - Testa o SET
 
             // Assert - Testa o GET
             Assert.AreEqual(1, adm.Id);

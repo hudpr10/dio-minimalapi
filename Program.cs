@@ -7,13 +7,34 @@ using minimalsAPIs.Dominio.Servicos;
 using minimalsAPIs.Dominio.Entidades;
 using minimalsAPIs.Infraestrutura.Db;
 using minimalsAPIs.Dominio.Enums;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+#region Builder - JWT
+var key = builder.Configuration.GetSection("Jwt").ToString();
+if (string.IsNullOrEmpty(key))
+    key = "123456";
+
+builder.Services.AddAuthentication(options => {
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options => {
+    options.TokenValidationParameters = new TokenValidationParameters {
+        ValidateLifetime = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+    };
+});
+
+builder.Services.AddAuthorization();
+#endregion
 
 builder.Services.AddScoped<IAdministradorServico, AdministradorServico>();
 builder.Services.AddScoped<IVeiculoServico, VeiculoServico>();
 
-#region Swagger
+#region Builder - Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 #endregion
@@ -178,9 +199,14 @@ app.MapDelete("/veiculos/{id}", ([FromRoute] int id, IVeiculoServico servico) =>
 }).WithTags("Veiculos");
 #endregion
 
-#region Swagger
+#region App - Swagger
 app.UseSwagger();
 app.UseSwaggerUI();
+#endregion
+
+#region App - JWT
+app.UseAuthentication();
+app.UseAuthorization();
 #endregion
 
 app.Run();

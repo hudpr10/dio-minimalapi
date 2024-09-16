@@ -41,7 +41,7 @@ namespace minimalsAPIs.Dominio.Servicos
         }
 
 
-        public List<Veiculo> Todos(int pagina = 1, string? nome = null, string? marca = null)
+        public List<Veiculo> Todos(int? pagina = 1, string? nome = null, string? marca = null)
         {
             var carros = _contexto.Veiculos.AsQueryable();
             if(!string.IsNullOrEmpty(nome))
@@ -51,7 +51,10 @@ namespace minimalsAPIs.Dominio.Servicos
 
             int itensPorPagina = 10;
 
-            carros = carros.Skip((pagina - 1) * itensPorPagina).Take(itensPorPagina);
+            if(pagina != null)
+            {
+                carros = carros.Skip(((int)pagina - 1) * itensPorPagina).Take(itensPorPagina);
+            }
 
             return carros.ToList();
         }

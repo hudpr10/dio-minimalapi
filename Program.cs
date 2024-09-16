@@ -6,6 +6,7 @@ using minimalsAPIs.Dominio.ModelViews;
 using minimalsAPIs.Dominio.Servicos;
 using minimalsAPIs.Dominio.Entidades;
 using minimalsAPIs.Infraestrutura.Db;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +56,17 @@ app.MapGet("/veiculos", ([FromQuery] int? pagina, IVeiculoServico veiculo) => {
     var veiculos = veiculo.Todos(pagina);
 
     return Results.Ok(veiculos);
+}).WithTags("Veiculos");
+#endregion
+
+#region Veiculos GET Id
+app.MapGet("/veiculos/{id}", ([FromRoute] int id, IVeiculoServico veiculo) => {
+    var veiculoBuscado = veiculo.BuscaPorId(id);
+
+    if (veiculoBuscado == null)
+        return Results.NotFound(); 
+
+    return Results.Ok(veiculoBuscado);
 }).WithTags("Veiculos");
 #endregion
 

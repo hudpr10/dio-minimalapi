@@ -43,11 +43,19 @@ namespace Testes.Domain.Servicos
 
             // Act - Testa o SET
             admServico.Incluir(adm);
-            var adm1 = admServico.BuscaPorId(adm.Id);
 
             // Assert - Testa o GET
             Assert.AreEqual(1, admServico.Todos(1).Count());
-            Assert.AreEqual(1, adm1.Id);
+        }
+
+        [TestMethod]
+        public void TestandoBuscarAdministrado()
+        {
+            var context = CriarContextoDeTeste();
+            var admServico = new AdministradorServico(context);
+            var admEncontrado = admServico.BuscaPorId(1);
+
+            Assert.AreEqual(1, admEncontrado.Id);
         }
     }
 }
